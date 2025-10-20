@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio | Núcleo Digital - Tu Tienda de Componentes</title>
+    <link rel="stylesheet" href="./assets/css/styles.css">
+</head>
+<body>
+
+    <header>
+        <h1>Núcleo Digital</h1>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="./pages/productos.html">Productos</a>
+            <a href="./pages/carrito.html">🛒 Carrito (<span id="contador-carrito">0</span>)</a>
+            <a href="./pages/loginRegistro.html">👤 Iniciar Sesión</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="hero-contenido">
+                <h2>Potencia tu Próximo Proyecto</h2>
+                <p>Ensamblamos el hardware de tus sueños. Componentes de última generación y PCs a medida.</p>
+                <a href="./pages/productos.html" class="btn-cta">Explorar Catálogo</a>
+            </div>
+        </section>
+
+        <section class="seccion-principal">
+            <h2 class="titulo-seccion">🔥 Ofertas de la Semana</h2>
+            <p class="subtitulo-seccion">Precios inigualables en CPUs y Tarjetas Gráficas seleccionadas.</p>
+            
+            <div id="ofertas-destacadas" class="grid-productos">
+                </div>
+        </section>
+
+        <section class="seccion-principal">
+            <h2 class="titulo-seccion">Categorías Principales</h2>
+            <div id="categorias-clave" class="grid-categorias">
+
+                <a href="./pages/productos.html?categoria=CPU" class="tarjeta-categoria">
+                    <h3>Procesadores (CPU)</h3>
+                    <p>El cerebro de tu equipo.</p>
+                </a>
+
+                <a href="./pages/productos.html?categoria=GPU" class="tarjeta-categoria">
+                    <h3>Tarjetas Gráficas (GPU)</h3>
+                    <p>Máximo rendimiento visual y gaming.</p>
+                </a>
+
+                <a href="./pages/productos.html?categoria=RAM" class="tarjeta-categoria">
+                    <h3>Memorias RAM</h3>
+                    <p>Velocidad y multitarea.</p>
+                </a>
+
+                <a href="./pages/productos.html?categoria=PC" class="tarjeta-categoria">
+                    <h3>PCs Armadas</h3>
+                    <p>Equipos listos para usar.</p>
+                </a>
+
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Núcleo Digital - Soluciones en Hardware</p>
+    </footer>
+    <script src="./assets/js/data.js"></script> 
+    <script src="./assets/js/script.js"></script> 
+</body>
+</html>
