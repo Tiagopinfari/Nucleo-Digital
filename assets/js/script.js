@@ -1,12 +1,8 @@
-// --- script.js ---
-
 // Referencia al contenedor en el HTML
 const contenedorProductos = document.getElementById('contenedor-productos');
 const contadorCarrito = document.getElementById('contador-carrito');
 
-// ----------------------------------------------------
-// 0. FUNCIONES DE PERSISTENCIA (NUEVO BLOQUE)
-// ----------------------------------------------------
+// 0. FUNCIONES DE PERSISTENCIA
 
 /**
  * Carga el contenido del carrito desde localStorage al array 'carrito'.
@@ -26,18 +22,17 @@ function guardarCarritoEnLocalStorage() {
     localStorage.setItem('carritoNucleoDigital', JSON.stringify(carrito));
 }
 
-// ----------------------------------------------------
 // 1. Muestra todos los productos en la página del catálogo.
-// ----------------------------------------------------
+
 function renderizarProductos() {
     productos.forEach(producto => {
-        // Creamos el elemento div que será la tarjeta del producto
+        // Elemento div que será la tarjeta del producto
         const tarjeta = document.createElement('div');
         tarjeta.classList.add('tarjeta-producto');
         
         // El contenido de la tarjeta
         tarjeta.innerHTML = `
-            <img src="img/${producto.imagen}" alt="${producto.nombre}">
+            <img src="../assets/img/${producto.imagen}" alt="${producto.nombre}">
             <h3>${producto.nombre}</h3>
             <p>${producto.descripcionCorta}</p>
             <p class="precio">$${producto.precio.toFixed(2)}</p>
@@ -45,23 +40,21 @@ function renderizarProductos() {
             <button class="btn-agregar" data-id="${producto.id}">Añadir al Carrito</button>
         `;
 
-        // Agregamos un 'event listener' al botón de añadir
+        // event listener al botón de añadir
         const botonAgregar = tarjeta.querySelector('.btn-agregar');
         botonAgregar.addEventListener('click', () => agregarAlCarrito(producto.id));
 
-        // Agregamos la tarjeta al contenedor principal
+        // Agregar la tarjeta al contenedor principal
         contenedorProductos.appendChild(tarjeta);
     });
 }
 
+// 2. Agregar un producto al carrito de compras
 
-// ----------------------------------------------------
-// 2. Agrega un producto al carrito de compras (lógica simple).
-// ----------------------------------------------------
 function agregarAlCarrito(productoId) {
     const productoAñadir = productos.find(p => p.id === productoId);
 
-    // Verificamos si el producto ya está en el carrito
+    // Verifica si el producto ya está en el carrito
     const itemEnCarrito = carrito.find(item => item.id === productoId);
 
     if (itemEnCarrito) {
@@ -72,17 +65,16 @@ function agregarAlCarrito(productoId) {
         carrito.push({ ...productoAñadir, cantidad: 1 });
     }
 
-    // NUEVO: Guardar el carrito después de cada cambio
+    // Guardar el carrito después de cada cambio
     guardarCarritoEnLocalStorage(); 
 
     // Actualizamos el contador visual y guardamos el carrito
     actualizarContadorCarrito();
-    console.log(`Producto añadido: ${productoAñadir.nombre}. Carrito actual:`, carrito); // Para depuración
+    console.log(`Producto añadido: ${productoAñadir.nombre}. Carrito actual:`, carrito); 
 }
 
-// ----------------------------------------------------
-// 3. Actualiza el número de ítems mostrados en el encabezado.
-// ----------------------------------------------------
+// 3. Actualizar el número de ítems mostrados en el encabezado.
+
 function actualizarContadorCarrito() {
     const contadorCarrito = document.getElementById('contador-carrito');
     if (contadorCarrito) { // Verifica si el elemento existe en la página actual
@@ -117,7 +109,7 @@ function renderizarCarrito() {
         const itemHTML = document.createElement('div');
         itemHTML.classList.add('item-carrito');
         itemHTML.innerHTML = `
-            <img src="img/${item.imagen}" alt="${item.nombre}">
+            <img src="../assets/img/${item.imagen}" alt="${item.nombre}">
             <div class="info-item">
                 <h4>${item.nombre}</h4>
                 <p>Precio Unitario: $${item.precio.toFixed(2)}</p>
@@ -167,7 +159,7 @@ function actualizarTotales() {
 
 
 /**
- * 6. Maneja el cambio de cantidad de un producto.
+ * 6. Manejar el cambio de cantidad de un producto.
  */
 function manejarCantidad(event) {
     const id = parseInt(event.target.dataset.id);
@@ -192,7 +184,7 @@ function manejarCantidad(event) {
 }
 
 /**
- * 7. Elimina un producto del carrito.
+ * 7. Eliminar un producto del carrito.
  */
 function eliminarDelCarrito(event) {
     const id = parseInt(event.target.dataset.id);
@@ -213,9 +205,8 @@ function eliminarItemPorId(id) {
     }
 }
 
-// ----------------------------------------------------
-// INICIO DE LA APLICACIÓN (Se ejecuta al cargar index.html o productos.html)
-// ----------------------------------------------------
+// INICIO DE LA APLICACIÓN
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Cargamos el carrito guardado para que los datos persistan
     cargarCarritoDesdeLocalStorage();
@@ -225,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
          renderizarProductos();
     }
     
-    // 3. Si estamos en la página del carrito, renderizamos su contenido (NUEVO)
+    // 3. Si estamos en la página del carrito, renderizamos su contenido
     if (document.getElementById('contenedor-items-carrito')) {
         renderizarCarrito();
     }

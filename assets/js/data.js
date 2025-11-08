@@ -1,4 +1,4 @@
-// --- data.js (Simulación de la base de datos de productos) ---
+// Simulación de la base de datos de productos
 
 const productos = [
     {
@@ -7,7 +7,7 @@ const productos = [
         categoria: "GPU",
         precio: 650.99,
         descripcionCorta: "Rendimiento de gama alta para 1440p.",
-        imagen: "gpu-rtx4070.jpg" // Nombre de archivo simulado
+        imagen: "Tarjeta Gráfica RTX 4070.png" 
     },
     {
         id: 2,
@@ -15,7 +15,7 @@ const productos = [
         categoria: "CPU",
         precio: 359.50,
         descripcionCorta: "8 núcleos potentes para gaming y creación.",
-        imagen: "cpu-r77700x.jpg"
+        imagen: "Procesador AMD Ryzen 7 7700X.jpg"
     },
     {
         id: 3,
@@ -23,7 +23,7 @@ const productos = [
         categoria: "RAM",
         precio: 125.00,
         descripcionCorta: "Velocidad de 6000MHz para alto rendimiento.",
-        imagen: "ram-ddr5-32gb.jpg"
+        imagen: "Memoria RAM DDR5 32GB (2x16GB).png"
     },
     {
         id: 4,
@@ -31,7 +31,7 @@ const productos = [
         categoria: "Gabinete",
         precio: 95.75,
         descripcionCorta: "Excelente flujo de aire y panel lateral de vidrio.",
-        imagen: "gabinete-mt.jpg"
+        imagen: "Gabinete Mid Tower Premium.png"
     }
 ];
 
