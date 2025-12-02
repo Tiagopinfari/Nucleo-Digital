@@ -205,6 +205,112 @@ function eliminarItemPorId(id) {
     }
 }
 
+// --- LÓGICA DE AUTENTICACIÓN ---
+
+let usuarios = [];
+const KEY_USUARIOS = 'nucleoDigitalUsuarios';
+const KEY_SESION = 'nucleoDigitalSesion';
+
+// 1. Cargar Usuarios Guardados
+function cargarUsuarios() {
+    const usuariosGuardados = localStorage.getItem(KEY_USUARIOS);
+    if (usuariosGuardados) {
+        usuarios = JSON.parse(usuariosGuardados);
+    }
+}
+
+// 2. Guardar nuevo usuario
+function manejarRegistro(event) {
+    event.preventDefault(); // Evita que se recargue la página
+
+    const nombre = document.getElementById('registro-nombre').value.trim();
+    const email = document.getElementById('registro-email').value.trim();
+    const password = document.getElementById('registro-password').value;
+    const mensaje = document.getElementById('auth-mensaje');
+    
+    // Validaciones simples
+    if (password.length < 6) {
+        mensaje.textContent = '❌ La contraseña debe tener al menos 6 caracteres.';
+        mensaje.style.color = 'red';
+        return;
+    }
+    
+    // Verificar si el email ya existe
+    if (usuarios.some(u => u.email === email)) {
+        mensaje.textContent = '❌ Este correo ya está registrado.';
+        mensaje.style.color = 'red';
+        return;
+    }
+
+    // Crear y guardar
+    const nuevoUsuario = { nombre, email, password };
+    usuarios.push(nuevoUsuario);
+    localStorage.setItem(KEY_USUARIOS, JSON.stringify(usuarios));
+    
+    mensaje.textContent = '✅ ¡Registro exitoso! Ahora inicia sesión.';
+    mensaje.style.color = 'green';
+    
+    document.getElementById('form-registro').reset();
+    
+    // Cambiar automáticamente a la pestaña de login después de 1.5 seg
+    setTimeout(() => {
+        document.getElementById('tab-login').click();
+        mensaje.textContent = '';
+    }, 1500);
+}
+
+// 3. Manejar Inicio de Sesión
+function manejarLogin(event) {
+    event.preventDefault();
+
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const mensaje = document.getElementById('auth-mensaje');
+
+    const usuarioEncontrado = usuarios.find(u => u.email === email && u.password === password);
+
+    if (usuarioEncontrado) {
+        // Guardamos la sesión activa
+        localStorage.setItem(KEY_SESION, JSON.stringify(usuarioEncontrado));
+        
+        mensaje.textContent = `👋 ¡Bienvenido, ${usuarioEncontrado.nombre}!`;
+        mensaje.style.color = '#007bff';
+        
+        // Redirigir al Inicio (index.html)
+        setTimeout(() => {
+            window.location.href = '../index.html'; 
+        }, 1000);
+    } else {
+        mensaje.textContent = '❌ Credenciales incorrectas.';
+        mensaje.style.color = 'red';
+    }
+}
+
+// 4. Configurar el cambio de pestañas (Tabs)
+function configurarTabs() {
+    const tabLogin = document.getElementById('tab-login');
+    const tabRegistro = document.getElementById('tab-registro');
+    const formLogin = document.getElementById('form-login');
+    const formRegistro = document.getElementById('form-registro');
+    const mensaje = document.getElementById('auth-mensaje');
+
+    tabLogin.addEventListener('click', () => {
+        tabLogin.classList.add('active');
+        tabRegistro.classList.remove('active');
+        formLogin.classList.remove('hidden-form');
+        formRegistro.classList.add('hidden-form');
+        mensaje.textContent = '';
+    });
+
+    tabRegistro.addEventListener('click', () => {
+        tabRegistro.classList.add('active');
+        tabLogin.classList.remove('active');
+        formRegistro.classList.remove('hidden-form');
+        formLogin.classList.add('hidden-form');
+        mensaje.textContent = '';
+    });
+}
+
 // INICIO DE LA APLICACIÓN
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -221,6 +327,39 @@ document.addEventListener('DOMContentLoaded', () => {
         renderizarCarrito();
     }
     
-    // 4. En cualquier página, actualizamos el contador del carrito en el header
+    // 4. Lógica para Autenticación 
+    if (document.getElementById('contenedor-auth')) {
+        cargarUsuarios(); // Carga usuarios de localStorage
+        configurarTabs(); // Activa las pestañas
+        
+        document.getElementById('form-registro').addEventListener('submit', manejarRegistro);
+        document.getElementById('form-login').addEventListener('submit', manejarLogin);
+        
+        // Simulación Google
+        document.getElementById('btn-google').addEventListener('click', () => {
+            alert('Funcionalidad de Google Login (Requiere Backend/Firebase).');
+        });
+    }
+
+    // 5. Verificar si hay usuario logueado para cambiar el menú
+    const sesionActiva = JSON.parse(localStorage.getItem(KEY_SESION));
+    const linkUsuario = document.getElementById('link-usuario'); // ¡Ahora buscamos por ID!
+    
+    if (sesionActiva && linkUsuario) {
+        // Si hay sesión y el botón existe, cambiamos el texto
+        linkUsuario.textContent = `👤 ${sesionActiva.nombre}`;
+        
+        // Opcional: Si quieres que al hacer clic vaya al perfil en lugar del login
+        // Verificamos si estamos en la raíz o en una subcarpeta para poner la ruta bien
+        if (window.location.pathname.includes('/pages/')) {
+            linkUsuario.href = "perfil.html";
+        } else {
+            linkUsuario.href = "./pages/perfil.html";
+        }
+        
+        // También podrías agregar un evento para cerrar sesión aquí si quisieras
+    }
+
+    // 6. En cualquier página, actualizamos el contador del carrito en el header
     actualizarContadorCarrito();
 });
