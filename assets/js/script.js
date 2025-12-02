@@ -33,11 +33,13 @@ function renderizarProductos() {
         // El contenido de la tarjeta
         tarjeta.innerHTML = `
             <img src="../assets/img/${producto.imagen}" alt="${producto.nombre}">
-            <h3>${producto.nombre}</h3>
-            <p>${producto.descripcionCorta}</p>
-            <p class="precio">$${producto.precio.toFixed(2)}</p>
-            <button class="btn-detalles">Ver Detalles</button>
-            <button class="btn-agregar" data-id="${producto.id}">Añadir al Carrito</button>
+            <h3>${producto.nombre}</h3>
+            <p>${producto.descripcionCorta}</p>
+            <p class="precio">$${producto.precio.toFixed(2)}</p>
+            
+            <button class="btn-detalles" onclick="window.location.href='detalleProducto.html?id=${producto.id}'">Ver Detalles</button>
+            
+            <button class="btn-agregar" data-id="${producto.id}">Añadir al Carrito</button>
         `;
 
         // event listener al botón de añadir
@@ -311,6 +313,97 @@ function configurarTabs() {
     });
 }
 
+// --- LÓGICA DE DETALLE DE PRODUCTO ---
+
+let productoActual = null; // Variable para guardar el producto que estamos viendo
+
+function renderizarDetalleProducto() {
+    const contenedorDetalle = document.getElementById('contenedor-detalle-producto');
+    
+    // 1. Leer el ID de la URL (ej: ?id=2)
+    const urlParams = new URLSearchParams(window.location.search);
+    const idProducto = parseInt(urlParams.get('id'));
+
+    // 2. Buscar el producto en la base de datos
+    productoActual = productos.find(p => p.id === idProducto);
+
+    if (!productoActual) {
+        contenedorDetalle.innerHTML = '<h3>Producto no encontrado 😢</h3><a href="productos.html">Volver al catálogo</a>';
+        return;
+    }
+
+    // 3. Generar el HTML
+    // Simulamos opciones de personalización (esto podría venir de data.js en el futuro)
+    const opcionesHTML = `
+        <div class="grupo-opcion">
+            <h4>Garantía Extendida</h4>
+            <select id="select-garantia" onchange="actualizarPrecioDetalle()">
+                <option value="0">Garantía Estándar (Gratis)</option>
+                <option value="25">Garantía +1 Año (+$25.00)</option>
+                <option value="45">Garantía +2 Años (+$45.00)</option>
+            </select>
+        </div>
+    `;
+
+    contenedorDetalle.innerHTML = `
+        <div class="detalle-imagen">
+            <img src="../assets/img/${productoActual.imagen}" alt="${productoActual.nombre}">
+        </div>
+        <div class="detalle-info">
+            <h2>${productoActual.nombre}</h2>
+            <p class="descripcion-larga">${productoActual.descripcionCorta} Ideal para entusiastas que buscan el mejor rendimiento por su dinero.</p>
+            
+            ${opcionesHTML}
+
+            <span class="precio-final" id="precio-detalle">$${productoActual.precio.toFixed(2)}</span>
+
+            <button class="btn-agregar-grande" onclick="agregarDesdeDetalle()">
+                Añadir al Carrito 🛒
+            </button>
+        </div>
+    `;
+}
+
+// Actualiza el precio mostrado cuando cambias el select
+function actualizarPrecioDetalle() {
+    const selectGarantia = document.getElementById('select-garantia');
+    const costoExtra = parseFloat(selectGarantia.value);
+    const precioTotal = productoActual.precio + costoExtra;
+    
+    document.getElementById('precio-detalle').textContent = `$${precioTotal.toFixed(2)}`;
+}
+
+// Añade el producto al carrito con el precio modificado
+function agregarDesdeDetalle() {
+    const selectGarantia = document.getElementById('select-garantia');
+    const costoExtra = parseFloat(selectGarantia.value);
+    
+    // Creamos un objeto especial para el carrito
+    const itemParaCarrito = {
+        ...productoActual,
+        precio: productoActual.precio + costoExtra, // Precio base + extra
+        nombre: productoActual.nombre + (costoExtra > 0 ? " (Con Garantía)" : ""), // Modificamos nombre si hay extra
+        cantidad: 1
+    };
+
+    // Usamos una lógica similar a agregarAlCarrito pero manual
+    // Para simplificar, lo añadimos como un item nuevo si tiene garantía
+    const itemExistente = carrito.find(i => i.id === itemParaCarrito.id && i.precio === itemParaCarrito.precio);
+
+    if (itemExistente) {
+        itemExistente.cantidad++;
+    } else {
+        // Truco: si tiene precio distinto, le cambiamos el ID temporalmente para que no se mezcle
+        if (costoExtra > 0) itemParaCarrito.id = itemParaCarrito.id + "-extra"; 
+        carrito.push(itemParaCarrito);
+    }
+
+    guardarCarritoEnLocalStorage();
+    actualizarContadorCarrito();
+    
+    alert("¡Producto añadido al carrito!");
+}
+
 // INICIO DE LA APLICACIÓN
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -325,6 +418,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Si estamos en la página del carrito, renderizamos su contenido
     if (document.getElementById('contenedor-items-carrito')) {
         renderizarCarrito();
+    }
+    
+    if (document.getElementById('contenedor-detalle-producto')) {
+        renderizarDetalleProducto();
     }
     
     // 4. Lógica para Autenticación 

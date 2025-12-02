@@ -139,7 +139,14 @@ h2 {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    
+    /* CAMBIO CLAVE: Usamos Flexbox para centrar todo perfectamente */
+    display: flex;
+    flex-direction: column; /* Apila los elementos verticalmente */
+    align-items: center;    /* Centra los elementos horizontalmente */
+    justify-content: space-between; /* Distribuye el espacio si la tarjeta crece */
+    
+    text-align: center; /* Mantiene el texto centrado por si acaso */
     transition: transform 0.2s;
 }
 
@@ -423,4 +430,89 @@ footer {
     text-align: center;
     font-weight: bold;
     min-height: 20px;
+}
+
+/* --- Estilos para Detalle de Producto --- */
+
+.detalle-producto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+    gap: 40px;
+    padding: 40px 0;
+    align-items: start;
+}
+
+/* En pantallas pequeñas, una sola columna */
+@media (max-width: 768px) {
+    .detalle-producto-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.detalle-imagen img {
+    width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.detalle-info h2 {
+    font-size: 2.5rem;
+    margin-top: 0;
+    color: #333;
+}
+
+.detalle-info .descripcion-larga {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 30px;
+}
+
+.detalle-info .precio-final {
+    font-size: 2.5rem;
+    color: #28a745;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 20px;
+}
+
+/* Estilos de los Selectores (Personalización) */
+.grupo-opcion {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+}
+
+.grupo-opcion h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #007bff;
+}
+
+.grupo-opcion select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.btn-agregar-grande {
+    width: 100%;
+    padding: 18px;
+    background-color: #007bff;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 20px;
+}
+
+.btn-agregar-grande:hover {
+    background-color: #0056b3;
 }
