@@ -39,9 +39,8 @@ h2 {
     margin-bottom: 30px;
 }
 
-/* Estilos para la Página de Inicio (index.html) */
+/* Estilos para la Página de Inicio */
 
-/* Sección Hero */
 #hero {
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../img/hero-background.png'); 
     background-size: cover;
@@ -139,14 +138,12 @@ h2 {
     padding: 15px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    
-    /* CAMBIO CLAVE: Usamos Flexbox para centrar todo perfectamente */
     display: flex;
-    flex-direction: column; /* Apila los elementos verticalmente */
-    align-items: center;    /* Centra los elementos horizontalmente */
-    justify-content: space-between; /* Distribuye el espacio si la tarjeta crece */
+    flex-direction: column; 
+    align-items: center;    
+    justify-content: space-between; 
     
-    text-align: center; /* Mantiene el texto centrado por si acaso */
+    text-align: center; 
     transition: transform 0.2s;
 }
 
@@ -319,9 +316,9 @@ footer {
 .contenedor-centrado {
     display: flex;
     justify-content: center;
-    align-items: center; /* Centrado vertical */
+    align-items: center; 
     padding: 60px 20px;
-    min-height: 60vh; /* Altura mínima para que no quede pegado arriba */
+    min-height: 60vh; 
 }
 
 .auth-container {
@@ -354,7 +351,7 @@ footer {
 .tab-btn.active {
     color: #007bff;
     border-bottom: 2px solid #007bff;
-    margin-bottom: -2px; /* Para solapar la línea gris */
+    margin-bottom: -2px; 
 }
 
 .auth-form input {
@@ -363,7 +360,7 @@ footer {
     margin-bottom: 15px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    box-sizing: border-box; /* Importante para que el padding no rompa el ancho */
+    box-sizing: border-box; 
 }
 
 .btn-principal {
@@ -436,7 +433,7 @@ footer {
 
 .detalle-producto-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas iguales */
+    grid-template-columns: 1fr 1fr; 
     gap: 40px;
     padding: 40px 0;
     align-items: start;
@@ -476,7 +473,7 @@ footer {
     margin-bottom: 20px;
 }
 
-/* Estilos de los Selectores (Personalización) */
+/* Estilos de los Selectores */
 .grupo-opcion {
     margin-bottom: 20px;
     padding: 15px;

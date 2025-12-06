@@ -232,14 +232,14 @@ function manejarRegistro(event) {
     
     // Validaciones simples
     if (password.length < 6) {
-        mensaje.textContent = '❌ La contraseña debe tener al menos 6 caracteres.';
+        mensaje.textContent = 'La contraseña debe tener al menos 6 caracteres.';
         mensaje.style.color = 'red';
         return;
     }
     
     // Verificar si el email ya existe
     if (usuarios.some(u => u.email === email)) {
-        mensaje.textContent = '❌ Este correo ya está registrado.';
+        mensaje.textContent = 'Este correo ya está registrado.';
         mensaje.style.color = 'red';
         return;
     }
@@ -249,7 +249,7 @@ function manejarRegistro(event) {
     usuarios.push(nuevoUsuario);
     localStorage.setItem(KEY_USUARIOS, JSON.stringify(usuarios));
     
-    mensaje.textContent = '✅ ¡Registro exitoso! Ahora inicia sesión.';
+    mensaje.textContent = '¡Registro exitoso! Ahora inicia sesión.';
     mensaje.style.color = 'green';
     
     document.getElementById('form-registro').reset();
@@ -275,15 +275,15 @@ function manejarLogin(event) {
         // Guardamos la sesión activa
         localStorage.setItem(KEY_SESION, JSON.stringify(usuarioEncontrado));
         
-        mensaje.textContent = `👋 ¡Bienvenido, ${usuarioEncontrado.nombre}!`;
+        mensaje.textContent = `¡Bienvenido, ${usuarioEncontrado.nombre}!`;
         mensaje.style.color = '#007bff';
         
-        // Redirigir al Inicio (index.html)
+        // Redirigir al Inicio 
         setTimeout(() => {
             window.location.href = '../index.html'; 
         }, 1000);
     } else {
-        mensaje.textContent = '❌ Credenciales incorrectas.';
+        mensaje.textContent = 'Credenciales incorrectas.';
         mensaje.style.color = 'red';
     }
 }
@@ -320,7 +320,7 @@ let productoActual = null; // Variable para guardar el producto que estamos vien
 function renderizarDetalleProducto() {
     const contenedorDetalle = document.getElementById('contenedor-detalle-producto');
     
-    // 1. Leer el ID de la URL (ej: ?id=2)
+    // 1. Leer el ID de la URL 
     const urlParams = new URLSearchParams(window.location.search);
     const idProducto = parseInt(urlParams.get('id'));
 
@@ -328,12 +328,12 @@ function renderizarDetalleProducto() {
     productoActual = productos.find(p => p.id === idProducto);
 
     if (!productoActual) {
-        contenedorDetalle.innerHTML = '<h3>Producto no encontrado 😢</h3><a href="productos.html">Volver al catálogo</a>';
+        contenedorDetalle.innerHTML = '<h3>Producto no encontrado</h3><a href="productos.html">Volver al catálogo</a>';
         return;
     }
 
     // 3. Generar el HTML
-    // Simulamos opciones de personalización (esto podría venir de data.js en el futuro)
+    // Simulamos opciones de personalización 
     const opcionesHTML = `
         <div class="grupo-opcion">
             <h4>Garantía Extendida</h4>
@@ -381,19 +381,18 @@ function agregarDesdeDetalle() {
     // Creamos un objeto especial para el carrito
     const itemParaCarrito = {
         ...productoActual,
-        precio: productoActual.precio + costoExtra, // Precio base + extra
+        precio: productoActual.precio + costoExtra, 
         nombre: productoActual.nombre + (costoExtra > 0 ? " (Con Garantía)" : ""), // Modificamos nombre si hay extra
         cantidad: 1
     };
 
     // Usamos una lógica similar a agregarAlCarrito pero manual
-    // Para simplificar, lo añadimos como un item nuevo si tiene garantía
     const itemExistente = carrito.find(i => i.id === itemParaCarrito.id && i.precio === itemParaCarrito.precio);
 
     if (itemExistente) {
         itemExistente.cantidad++;
     } else {
-        // Truco: si tiene precio distinto, le cambiamos el ID temporalmente para que no se mezcle
+        // Si tiene precio distinto, le cambiamos el ID temporalmente para que no se mezcle
         if (costoExtra > 0) itemParaCarrito.id = itemParaCarrito.id + "-extra"; 
         carrito.push(itemParaCarrito);
     }
@@ -434,27 +433,24 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Simulación Google
         document.getElementById('btn-google').addEventListener('click', () => {
-            alert('Funcionalidad de Google Login (Requiere Backend/Firebase).');
+            alert('Funcionalidad de Google Login.');
         });
     }
 
     // 5. Verificar si hay usuario logueado para cambiar el menú
     const sesionActiva = JSON.parse(localStorage.getItem(KEY_SESION));
-    const linkUsuario = document.getElementById('link-usuario'); // ¡Ahora buscamos por ID!
+    const linkUsuario = document.getElementById('link-usuario'); 
     
     if (sesionActiva && linkUsuario) {
         // Si hay sesión y el botón existe, cambiamos el texto
         linkUsuario.textContent = `👤 ${sesionActiva.nombre}`;
         
-        // Opcional: Si quieres que al hacer clic vaya al perfil en lugar del login
         // Verificamos si estamos en la raíz o en una subcarpeta para poner la ruta bien
         if (window.location.pathname.includes('/pages/')) {
             linkUsuario.href = "perfil.html";
         } else {
             linkUsuario.href = "./pages/perfil.html";
         }
-        
-        // También podrías agregar un evento para cerrar sesión aquí si quisieras
     }
 
     // 6. En cualquier página, actualizamos el contador del carrito en el header
