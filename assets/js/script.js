@@ -24,31 +24,89 @@ function guardarCarritoEnLocalStorage() {
 
 // 1. Muestra todos los productos en la página del catálogo.
 
-function renderizarProductos() {
-    productos.forEach(producto => {
-        // Elemento div que será la tarjeta del producto
-        const tarjeta = document.createElement('div');
-        tarjeta.classList.add('tarjeta-producto');
-        
-        // El contenido de la tarjeta
-        tarjeta.innerHTML = `
-            <img src="../assets/img/${producto.imagen}" alt="${producto.nombre}">
+function renderizarProductos(listaProductos = productos) {
+    const contenedorProductos = document.getElementById('contenedor-productos');
+    contenedorProductos.innerHTML = ''; // Limpiar antes de mostrar
+
+    if (listaProductos.length === 0) {
+        contenedorProductos.innerHTML = '<p class="mensaje-vacio">No se encontraron productos con esos criterios 😔</p>';
+        return;
+    }
+
+    listaProductos.forEach(producto => {
+        const tarjeta = document.createElement('div');
+        tarjeta.classList.add('tarjeta-producto');
+        
+        tarjeta.innerHTML = `
+            <img src="../assets/img/${producto.imagen}" alt="${producto.nombre}">
             <h3>${producto.nombre}</h3>
             <p>${producto.descripcionCorta}</p>
             <p class="precio">$${producto.precio.toFixed(2)}</p>
             
             <button class="btn-detalles" onclick="window.location.href='detalleProducto.html?id=${producto.id}'">Ver Detalles</button>
-            
             <button class="btn-agregar" data-id="${producto.id}">Añadir al Carrito</button>
-        `;
+        `;
 
-        // event listener al botón de añadir
-        const botonAgregar = tarjeta.querySelector('.btn-agregar');
-        botonAgregar.addEventListener('click', () => agregarAlCarrito(producto.id));
+        const botonAgregar = tarjeta.querySelector('.btn-agregar');
+        botonAgregar.addEventListener('click', () => agregarAlCarrito(producto.id));
 
-        // Agregar la tarjeta al contenedor principal
-        contenedorProductos.appendChild(tarjeta);
-    });
+        contenedorProductos.appendChild(tarjeta);
+    });
+}
+
+// Función para inicializar los filtros
+function configurarFiltros() {
+    const inputBusqueda = document.getElementById('input-busqueda');
+    const botonesFiltro = document.querySelectorAll('.btn-filtro');
+
+    // 1. Filtrado por Búsqueda (Input)
+    inputBusqueda.addEventListener('input', (e) => {
+        const texto = e.target.value.toLowerCase();
+        
+        const productosFiltrados = productos.filter(p => 
+            p.nombre.toLowerCase().includes(texto) || 
+            p.categoria.toLowerCase().includes(texto)
+        );
+        
+        renderizarProductos(productosFiltrados);
+    });
+
+    // 2. Filtrado por Botones de Categoría
+    botonesFiltro.forEach(boton => {
+        boton.addEventListener('click', () => {
+            // Quitar clase active de todos y ponerla al actual
+            botonesFiltro.forEach(b => b.classList.remove('active'));
+            boton.classList.add('active');
+
+            const categoria = boton.dataset.categoria;
+            
+            if (categoria === 'todos') {
+                renderizarProductos(productos);
+            } else {
+                const filtrados = productos.filter(p => p.categoria === categoria);
+                renderizarProductos(filtrados);
+            }
+        });
+    });
+
+    // 3. Filtrado automático desde la URL (ej: productos.html?categoria=CPU)
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoriaUrl = urlParams.get('categoria');
+
+    if (categoriaUrl) {
+        // Buscar el botón correspondiente y simular click
+        const botonCorrespondiente = document.querySelector(`.btn-filtro[data-categoria="${categoriaUrl}"]`);
+        if (botonCorrespondiente) {
+            botonCorrespondiente.click();
+        } else {
+            // Si la categoría no tiene botón, filtramos manualmente
+            const filtrados = productos.filter(p => p.categoria === categoriaUrl);
+            renderizarProductos(filtrados);
+        }
+    } else {
+        // Si no hay filtro URL, mostrar todo
+        renderizarProductos(); 
+    }
 }
 
 // 2. Agregar un producto al carrito de compras
@@ -313,45 +371,59 @@ function configurarTabs() {
     });
 }
 
-// --- LÓGICA DE DETALLE DE PRODUCTO ---
+// --- LÓGICA DE DETALLE DE PRODUCTO (ACTUALIZADA) ---
 
-let productoActual = null; // Variable para guardar el producto que estamos viendo
+let productoActual = null; 
 
 function renderizarDetalleProducto() {
     const contenedorDetalle = document.getElementById('contenedor-detalle-producto');
     
-    // 1. Leer el ID de la URL 
+    // 1. Leer ID
     const urlParams = new URLSearchParams(window.location.search);
     const idProducto = parseInt(urlParams.get('id'));
 
-    // 2. Buscar el producto en la base de datos
+    // 2. Buscar producto
     productoActual = productos.find(p => p.id === idProducto);
 
     if (!productoActual) {
-        contenedorDetalle.innerHTML = '<h3>Producto no encontrado</h3><a href="productos.html">Volver al catálogo</a>';
+        contenedorDetalle.innerHTML = '<h3>Producto no encontrado 😢</h3><a href="productos.html">Volver al catálogo</a>';
         return;
     }
 
-    // 3. Generar el HTML
-    // Simulamos opciones de personalización 
-    const opcionesHTML = `
-        <div class="grupo-opcion">
-            <h4>Garantía Extendida</h4>
-            <select id="select-garantia" onchange="actualizarPrecioDetalle()">
-                <option value="0">Garantía Estándar (Gratis)</option>
-                <option value="25">Garantía +1 Año (+$25.00)</option>
-                <option value="45">Garantía +2 Años (+$45.00)</option>
-            </select>
-        </div>
-    `;
+    // 3. Generar HTML de Opciones Dinámicas
+    let opcionesHTML = '';
+    
+    // Si el producto tiene opciones configuradas en data.js
+    if (productoActual.opciones && productoActual.opciones.length > 0) {
+        
+        productoActual.opciones.forEach((opcion, index) => {
+            // Creamos las opciones del <select>
+            let valoresHTML = '';
+            opcion.valores.forEach((valor, vIndex) => {
+                const precioExtraTexto = valor.precio > 0 ? `(+$${valor.precio.toFixed(2)})` : '';
+                valoresHTML += `<option value="${valor.precio}" data-nombre="${valor.nombre}">${valor.nombre} ${precioExtraTexto}</option>`;
+            });
 
+            // Agregamos el bloque completo del select
+            opcionesHTML += `
+                <div class="grupo-opcion">
+                    <h4>${opcion.titulo}</h4>
+                    <select class="selector-dinamico" data-titulo="${opcion.titulo}" onchange="actualizarPrecioDetalle()">
+                        ${valoresHTML}
+                    </select>
+                </div>
+            `;
+        });
+    }
+
+    // 4. Inyectar todo en el DOM
     contenedorDetalle.innerHTML = `
         <div class="detalle-imagen">
             <img src="../assets/img/${productoActual.imagen}" alt="${productoActual.nombre}">
         </div>
         <div class="detalle-info">
             <h2>${productoActual.nombre}</h2>
-            <p class="descripcion-larga">${productoActual.descripcionCorta} Ideal para entusiastas que buscan el mejor rendimiento por su dinero.</p>
+            <p class="descripcion-larga">${productoActual.descripcionCorta}</p>
             
             ${opcionesHTML}
 
@@ -364,43 +436,168 @@ function renderizarDetalleProducto() {
     `;
 }
 
-// Actualiza el precio mostrado cuando cambias el select
+// Calcula el precio sumando el base + todos los selectores activos
 function actualizarPrecioDetalle() {
-    const selectGarantia = document.getElementById('select-garantia');
-    const costoExtra = parseFloat(selectGarantia.value);
-    const precioTotal = productoActual.precio + costoExtra;
+    let costoExtraTotal = 0;
     
+    // Buscamos todos los selects que creamos dinámicamente
+    const selectores = document.querySelectorAll('.selector-dinamico');
+    
+    selectores.forEach(select => {
+        costoExtraTotal += parseFloat(select.value);
+    });
+
+    const precioTotal = productoActual.precio + costoExtraTotal;
     document.getElementById('precio-detalle').textContent = `$${precioTotal.toFixed(2)}`;
 }
 
-// Añade el producto al carrito con el precio modificado
+// Añade al carrito incluyendo la información de las opciones elegidas
 function agregarDesdeDetalle() {
-    const selectGarantia = document.getElementById('select-garantia');
-    const costoExtra = parseFloat(selectGarantia.value);
+    let costoExtraTotal = 0;
+    let descripcionVariantes = []; // Para guardar qué eligió el usuario (ej: "Blanco Artic")
+
+    const selectores = document.querySelectorAll('.selector-dinamico');
     
-    // Creamos un objeto especial para el carrito
+    selectores.forEach(select => {
+        const precio = parseFloat(select.value);
+        const opcionNombre = select.options[select.selectedIndex].dataset.nombre; // Leemos el nombre del atributo data
+        const tituloOpcion = select.dataset.titulo;
+
+        costoExtraTotal += precio;
+        
+        // Solo guardamos la descripción si no es la opción por defecto o si tiene costo
+        // (Opcional: guardar siempre para ser más claros)
+        descripcionVariantes.push(`${tituloOpcion}: ${opcionNombre}`);
+    });
+
+    // Creamos el nombre compuesto (ej: "Memoria RAM (Color: Blanco Artic)")
+    let nombreFinal = productoActual.nombre;
+    if (descripcionVariantes.length > 0) {
+        nombreFinal += ` (${descripcionVariantes.join(', ')})`;
+    }
+
     const itemParaCarrito = {
         ...productoActual,
-        precio: productoActual.precio + costoExtra, 
-        nombre: productoActual.nombre + (costoExtra > 0 ? " (Con Garantía)" : ""), // Modificamos nombre si hay extra
+        id: productoActual.id + "-" + descripcionVariantes.join('-').replace(/\s+/g, ''), // ID único para variantes
+        precio: productoActual.precio + costoExtraTotal,
+        nombre: nombreFinal,
         cantidad: 1
     };
 
-    // Usamos una lógica similar a agregarAlCarrito pero manual
-    const itemExistente = carrito.find(i => i.id === itemParaCarrito.id && i.precio === itemParaCarrito.precio);
+    // Lógica de agregar al carrito
+    const itemExistente = carrito.find(i => i.id === itemParaCarrito.id);
 
     if (itemExistente) {
         itemExistente.cantidad++;
     } else {
-        // Si tiene precio distinto, le cambiamos el ID temporalmente para que no se mezcle
-        if (costoExtra > 0) itemParaCarrito.id = itemParaCarrito.id + "-extra"; 
         carrito.push(itemParaCarrito);
     }
 
     guardarCarritoEnLocalStorage();
     actualizarContadorCarrito();
     
-    alert("¡Producto añadido al carrito!");
+    alert("¡Producto añadido al carrito con tus opciones!");
+}
+
+// --- LÓGICA DE PERFIL Y CHECKOUT ---
+
+const KEY_PEDIDOS = 'nucleoDigitalPedidos';
+
+// 1. Finalizar Compra (Simulación)
+function finalizarCompra() {
+    // Verificar si hay usuario logueado
+    const sesionActiva = JSON.parse(localStorage.getItem(KEY_SESION));
+    
+    if (!sesionActiva) {
+        alert("⚠️ Debes iniciar sesión para realizar una compra.");
+        window.location.href = "loginRegistro.html";
+        return;
+    }
+
+    if (carrito.length === 0) return;
+
+    // Calcular total final
+    const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    const total = subtotal + 15; // + Envío fijo
+
+    // Crear objeto del pedido
+    const nuevoPedido = {
+        id: Date.now(), // ID único basado en la fecha
+        fecha: new Date().toLocaleDateString(),
+        usuarioEmail: sesionActiva.email, // Importante para saber de quién es
+        items: [...carrito], // Copia de los items
+        total: total
+    };
+
+    // Guardar en historial general
+    let historialPedidos = JSON.parse(localStorage.getItem(KEY_PEDIDOS)) || [];
+    historialPedidos.push(nuevoPedido);
+    localStorage.setItem(KEY_PEDIDOS, JSON.stringify(historialPedidos));
+
+    // Vaciar carrito
+    carrito = [];
+    guardarCarritoEnLocalStorage();
+    
+    alert("✅ ¡Compra realizada con éxito! Gracias por tu pedido.");
+    
+    // Redirigir al perfil para ver el pedido
+    window.location.href = "perfil.html";
+}
+
+// 2. Renderizar Página de Perfil
+function renderizarPerfil() {
+    const sesionActiva = JSON.parse(localStorage.getItem(KEY_SESION));
+
+    // Seguridad: Si no hay sesión, mandar al login
+    if (!sesionActiva) {
+        window.location.href = "loginRegistro.html";
+        return;
+    }
+
+    // Mostrar nombre
+    document.getElementById('mensaje-bienvenida').textContent = `Hola, ${sesionActiva.nombre} 👋`;
+
+    // Configurar botón Logout
+    document.getElementById('btn-logout').addEventListener('click', () => {
+        localStorage.removeItem(KEY_SESION); // Borrar sesión
+        window.location.href = "../index.html"; // Ir al inicio
+    });
+
+    // Cargar y filtrar pedidos de ESTE usuario
+    const todosLosPedidos = JSON.parse(localStorage.getItem(KEY_PEDIDOS)) || [];
+    const misPedidos = todosLosPedidos.filter(p => p.usuarioEmail === sesionActiva.email);
+    const contenedorPedidos = document.getElementById('lista-pedidos');
+
+    if (misPedidos.length === 0) {
+        contenedorPedidos.innerHTML = '<p>Aún no has realizado ninguna compra.</p>';
+        return;
+    }
+
+    // Dibujar pedidos (Ordenados del más reciente al más antiguo)
+    contenedorPedidos.innerHTML = '';
+    misPedidos.reverse().forEach(pedido => {
+        
+        let listaItemsHTML = '';
+        pedido.items.forEach(item => {
+            listaItemsHTML += `<li>• ${item.cantidad}x ${item.nombre}</li>`;
+        });
+
+        const pedidoHTML = `
+            <div class="pedido-card">
+                <div class="pedido-header">
+                    <span>Pedido #${pedido.id}</span>
+                    <span>📅 ${pedido.fecha}</span>
+                </div>
+                <div class="pedido-detalle">
+                    <ul>${listaItemsHTML}</ul>
+                </div>
+                <div class="pedido-total">
+                    Total: $${pedido.total.toFixed(2)}
+                </div>
+            </div>
+        `;
+        contenedorPedidos.innerHTML += pedidoHTML;
+    });
 }
 
 // INICIO DE LA APLICACIÓN
@@ -411,18 +608,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // 2. Si estamos en la página de productos, renderizamos el catálogo
     if (document.getElementById('contenedor-productos')) {
-         renderizarProductos();
+         //renderizarProductos();
+         configurarFiltros();
     }
     
     // 3. Si estamos en la página del carrito, renderizamos su contenido
     if (document.getElementById('contenedor-items-carrito')) {
         renderizarCarrito();
+        // Activar botón de finalizar compra
+        const btnFinalizar = document.getElementById('btn-finalizar-compra');
+        if(btnFinalizar) {
+            btnFinalizar.addEventListener('click', finalizarCompra);
+        }
     }
     
     if (document.getElementById('contenedor-detalle-producto')) {
         renderizarDetalleProducto();
     }
     
+    // NUEVO: Activar perfil
+    if (document.getElementById('contenedor-perfil')) {
+        renderizarPerfil();
+    }
+
     // 4. Lógica para Autenticación 
     if (document.getElementById('contenedor-auth')) {
         cargarUsuarios(); // Carga usuarios de localStorage
@@ -445,12 +653,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Si hay sesión y el botón existe, cambiamos el texto
         linkUsuario.textContent = `👤 ${sesionActiva.nombre}`;
         
-        // Verificamos si estamos en la raíz o en una subcarpeta para poner la ruta bien
-        if (window.location.pathname.includes('/pages/')) {
-            linkUsuario.href = "perfil.html";
-        } else {
-            linkUsuario.href = "./pages/perfil.html";
-        }
+        const rutaPerfil = window.location.pathname.includes('/pages/') ? "perfil.html" : "./pages/perfil.html";
+        linkUsuario.href = rutaPerfil;
     }
 
     // 6. En cualquier página, actualizamos el contador del carrito en el header

@@ -513,3 +513,130 @@ footer {
 .btn-agregar-grande:hover {
     background-color: #0056b3;
 }
+
+/* --- Estilos para Perfil y Historial --- */
+
+.perfil-container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.perfil-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.btn-logout {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-logout:hover {
+    background-color: #c82333;
+}
+
+/* Tarjetas de Pedidos */
+.pedido-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #fafafa;
+}
+
+.pedido-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+.pedido-detalle ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pedido-detalle li {
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.pedido-total {
+    text-align: right;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 15px;
+}
+
+/* --- Barra de Herramientas (Búsqueda y Filtros) --- */
+.toolbar-productos {
+    max-width: 800px;
+    margin: 0 auto 30px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+.buscador input {
+    width: 100%;
+    max-width: 400px;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 50px;
+    font-size: 1rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    outline: none;
+    transition: box-shadow 0.3s;
+}
+
+.buscador input:focus {
+    box-shadow: 0 4px 10px rgba(0,123,255,0.2);
+    border-color: #007bff;
+}
+
+.filtros-botones {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn-filtro {
+    background: white;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #555;
+    transition: all 0.2s;
+}
+
+.btn-filtro:hover {
+    background-color: #f1f1f1;
+}
+
+.btn-filtro.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}

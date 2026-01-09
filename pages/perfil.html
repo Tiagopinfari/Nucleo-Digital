@@ -1,11 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Mi Perfil | Núcleo Digital</title>
+    <link rel="stylesheet" href="../assets/css/styles.css">
 </head>
 <body>
-    
+
+    <header>
+        <h1>Núcleo Digital</h1>
+        <nav>
+            <a href="../index.html">Inicio</a>
+            <a href="productos.html">Productos</a>
+            <a href="carrito.html">🛒 Carrito (<span id="contador-carrito">0</span>)</a>
+            <a href="#" id="link-usuario">👤 Mi Cuenta</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="contenedor-perfil" class="perfil-container">
+            <div class="perfil-header">
+                <h2 id="mensaje-bienvenida">Hola, Usuario</h2>
+                <button id="btn-logout" class="btn-logout">Cerrar Sesión</button>
+            </div>
+
+            <div class="historial-seccion">
+                <h3>📜 Mis Pedidos Recientes</h3>
+                <div id="lista-pedidos" class="lista-pedidos">
+                    <p>Cargando historial...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Núcleo Digital</p>
+    </footer>
+
+    <script src="../assets/js/data.js"></script>
+    <script src="../assets/js/script.js"></script>
 </body>
 </html>
