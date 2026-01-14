@@ -2,6 +2,71 @@
 const contenedorProductos = document.getElementById('contenedor-productos');
 const contadorCarrito = document.getElementById('contador-carrito');
 
+// --- VARIABLES GLOBALES ---
+let productos = []; // Ahora empieza vacío y se llena con el JSON
+let carrito = [];
+
+// --- CARGA DE DATOS (NUEVO CON FETCH) ---
+
+async function cargarProductos() {
+    try {
+        // Hacemos la petición al archivo JSON
+        const respuesta = await fetch('../assets/data/productos.json');
+        
+        // Verificamos si la ruta es correcta (útil si estás en el index o en pages)
+        // Si falla, intentamos con la ruta desde el index
+        if (!respuesta.ok) {
+            throw new Error('No se pudo cargar desde ../assets, intentando ./assets');
+        }
+
+        const datos = await respuesta.json();
+        productos = datos; // Guardamos los datos en nuestra variable global
+        console.log("Productos cargados exitosamente:", productos);
+    } catch (error) {
+        // Fallback por si estamos en el index.html (ruta distinta)
+        try {
+            const respuestaIndex = await fetch('./assets/data/productos.json');
+            const datosIndex = await respuestaIndex.json();
+            productos = datosIndex;
+        } catch (errorFinal) {
+            console.error("Error cargando productos:", errorFinal);
+            mostrarNotificacion("Error al cargar el catálogo.", "error");
+        }
+    }
+}
+
+// --- LÓGICA DE PÁGINA DE INICIO (OFERTAS) ---
+
+function renderizarOfertasDestacadas() {
+    const contenedorOfertas = document.getElementById('ofertas-destacadas');
+    
+    // Filtramos productos para mostrar en oferta (Ej: los que valgan menos de $400)
+    // O podrías simplemente tomar los primeros 3: productos.slice(0, 3);
+    const productosOferta = productos.filter(p => p.precio < 400); 
+
+    contenedorOfertas.innerHTML = ''; // Limpiar
+
+    productosOferta.forEach(producto => {
+        const tarjeta = document.createElement('div');
+        tarjeta.classList.add('tarjeta-producto');
+        
+        tarjeta.innerHTML = `
+            <img src="./assets/img/${producto.imagen}" alt="${producto.nombre}">
+            <h3>${producto.nombre}</h3>
+            <p class="precio">$${producto.precio.toFixed(2)}</p>
+            
+            <button class="btn-detalles" onclick="window.location.href='./pages/detalleProducto.html?id=${producto.id}'">Ver Detalles</button>
+            <button class="btn-agregar" data-id="${producto.id}">Añadir al Carrito</button>
+        `;
+
+        // Lógica del botón agregar
+        const botonAgregar = tarjeta.querySelector('.btn-agregar');
+        botonAgregar.addEventListener('click', () => agregarAlCarrito(producto.id));
+
+        contenedorOfertas.appendChild(tarjeta);
+    });
+}
+
 // 0. FUNCIONES DE PERSISTENCIA
 
 /**
@@ -602,10 +667,11 @@ function renderizarPerfil() {
 
 // INICIO DE LA APLICACIÓN
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // 1. Cargamos el carrito guardado para que los datos persistan
     cargarCarritoDesdeLocalStorage();
-    
+    await cargarProductos(); // ¡ESPERAMOS A QUE LLEGUEN LOS DATOS!
+
     // 2. Si estamos en la página de productos, renderizamos el catálogo
     if (document.getElementById('contenedor-productos')) {
          //renderizarProductos();
@@ -643,6 +709,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('btn-google').addEventListener('click', () => {
             alert('Funcionalidad de Google Login.');
         });
+    }
+
+    // NUEVO: Lógica para el Home (Index)
+    if (document.getElementById('ofertas-destacadas')) {
+        renderizarOfertasDestacadas();
     }
 
     // 5. Verificar si hay usuario logueado para cambiar el menú

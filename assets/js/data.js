@@ -1,6 +1,6 @@
 // Simulación de la base de datos de productos
 
-class Producto {
+/*class Producto {
     // Agregamos 'opciones' al constructor (por defecto es un array vacío)
     constructor(id, nombre, categoria, precio, descripcionCorta, imagen, opciones = []) {
         this.id = id;
@@ -84,4 +84,4 @@ const productos = [
 ];
 
 // Simulamos el carrito 
-let carrito = [];
+let carrito = [];*/
