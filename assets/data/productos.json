@@ -4,7 +4,7 @@
         "nombre": "Tarjeta Gráfica RTX 4070",
         "categoria": "GPU",
         "precio": 650.99,
-        "descripcionCorta": "Rendimiento de gama alta para 1440p.",
+        "descripcionCorta": "Rendimiento de gama alta para 1440p con DLSS 3.",
         "imagen": "Tarjeta Gráfica RTX 4070.png",
         "opciones": [
             {
@@ -18,13 +18,89 @@
         ]
     },
     {
+        "id": 101,
+        "nombre": "AMD Radeon RX 7800 XT",
+        "categoria": "GPU",
+        "precio": 520.00,
+        "descripcionCorta": "Potencia bruta para gaming en 1440p y 4K.",
+        "imagen": "AMD Radeon RX 7800 XT.png",
+        "opciones": [
+            {
+                "titulo": "Edición",
+                "valores": [
+                    { "nombre": "Referencia", "precio": 0 },
+                    { "nombre": "Overclocked", "precio": 30.00 }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 102,
+        "nombre": "NVIDIA RTX 3060 12GB",
+        "categoria": "GPU",
+        "precio": 329.99,
+        "descripcionCorta": "La reina del 1080p con VRAM de sobra para texturas.",
+        "imagen": "NVIDIA RTX 3060 12GB.jpg",
+        "opciones": [
+            {
+                "titulo": "Modelo de Ensamble",
+                "valores": [
+                    { "nombre": "Dual Fan (Compacta)", "precio": 0 },
+                    { "nombre": "Gaming X Trio (3 Fans + RGB)", "precio": 40.00 }
+                ]
+            }
+        ]
+    },
+    {
         "id": 2,
         "nombre": "Procesador AMD Ryzen 7 7700X",
         "categoria": "CPU",
         "precio": 359.50,
         "descripcionCorta": "8 núcleos potentes para gaming y creación.",
         "imagen": "Procesador AMD Ryzen 7 7700X.jpg",
-        "opciones": []
+        "opciones": [
+            {
+                "titulo": "Pack de Refrigeración",
+                "valores": [
+                    { "nombre": "Solo Procesador", "precio": 0 },
+                    { "nombre": "Incluir Cooler de Aire", "precio": 25.00 }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 201,
+        "nombre": "Intel Core i5-13600K",
+        "categoria": "CPU",
+        "precio": 315.00,
+        "descripcionCorta": "El rey del rendimiento calidad-precio para gaming.",
+        "imagen": "Intel Core i5-13600K.png",
+        "opciones": [
+            {
+                "titulo": "Pack de Refrigeración",
+                "valores": [
+                    { "nombre": "Solo Procesador", "precio": 0 },
+                    { "nombre": "Incluir Cooler de Aire", "precio": 25.00 }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 202,
+        "nombre": "Intel Core i9-14900K",
+        "categoria": "CPU",
+        "precio": 599.00,
+        "descripcionCorta": "Máxima potencia extrema para tareas pesadas.",
+        "imagen": "Intel Core i9-14900K.png",
+        "opciones": [
+            {
+                "titulo": "Pasta Térmica",
+                "valores": [
+                    { "nombre": "No incluir", "precio": 0 },
+                    { "nombre": "Arctic Silver 5", "precio": 12.00 }
+                ]
+            }
+        ]
     },
     {
         "id": 3,
@@ -45,12 +121,84 @@
         ]
     },
     {
+        "id": 301,
+        "nombre": "RAM DDR4 16GB Fury (2x8GB)",
+        "categoria": "RAM",
+        "precio": 45.00,
+        "descripcionCorta": "Económica y confiable para builds de entrada.",
+        "imagen": "RAM DDR4 16GB Fury (2x8GB).png",
+        "opciones": [
+            {
+                "titulo": "Color del Disipador",
+                "valores": [
+                    { "nombre": "Negro Clásico", "precio": 0 },
+                    { "nombre": "Blanco Artic", "precio": 10.00 },
+                    { "nombre": "Edición RGB", "precio": 15.00 }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 302,
+        "nombre": "Kit RAM 64GB Dominator Platinum",
+        "categoria": "RAM",
+        "precio": 280.00,
+        "descripcionCorta": "Para creadores de contenido y workstations.",
+        "imagen": "Kit RAM 64GB Dominator Platinum.avif",
+        "opciones": [
+            {
+                "titulo": "Color del Disipador",
+                "valores": [
+                    { "nombre": "Negro Clásico", "precio": 0 },
+                    { "nombre": "Blanco Artic", "precio": 10.00 },
+                    { "nombre": "Edición RGB", "precio": 15.00 }
+                ]
+            }
+        ]
+    },
+    {
         "id": 4,
         "nombre": "Gabinete Mid Tower Premium",
         "categoria": "Gabinete",
         "precio": 95.75,
         "descripcionCorta": "Excelente flujo de aire y panel lateral de vidrio.",
         "imagen": "Gabinete Mid Tower Premium.png",
+        "opciones": [
+            {
+                "titulo": "Ventiladores Adicionales",
+                "valores": [
+                    { "nombre": "Solo Gabinete", "precio": 0 },
+                    { "nombre": "Kit 3 Fans RGB", "precio": 35.00 },
+                    { "nombre": "Kit 6 Fans RGB + Controladora", "precio": 60.00 }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 401,
+        "nombre": "Gabinete Mini ITX Compact",
+        "categoria": "Gabinete",
+        "precio": 85.00,
+        "descripcionCorta": "Diseño minimalista para escritorios pequeños.",
+        "imagen": "Gabinete Mini ITX Compact.png",
+        "opciones": [
+            {
+                "titulo": "Ventiladores Adicionales",
+                "valores": [
+                    { "nombre": "Solo Gabinete", "precio": 0 },
+                    { "nombre": "Kit 3 Fans RGB", "precio": 35.00 },
+                    { "nombre": "Kit 6 Fans RGB + Controladora", "precio": 60.00 }
+                ]
+            }
+        ]
+    },
+    {
+        "id": 402,
+        "nombre": "Gabinete Full Tower E-ATX",
+        "categoria": "Gabinete",
+        "precio": 180.00,
+        "descripcionCorta": "Espacio masivo para refrigeración líquida custom.",
+        "imagen": "Gabinete Full Tower E-ATX.png",
         "opciones": [
             {
                 "titulo": "Ventiladores Adicionales",

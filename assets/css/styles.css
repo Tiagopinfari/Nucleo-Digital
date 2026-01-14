@@ -5,6 +5,10 @@ body {
     padding: 0;
     background-color: #f4f4f9;
     color: #333;
+    /* CORRECCIÓN FOOTER: Hacemos que el body sea una columna flexible */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Altura mínima: 100% de la ventana visible */
 }
 
 header {
@@ -31,12 +35,23 @@ main {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    /* CORRECCIÓN FOOTER: Hacemos que el main ocupe el espacio sobrante */
+    flex: 1; 
+    width: 100%; /* Asegura que ocupe el ancho disponible */
+    box-sizing: border-box; /* Para que el padding no rompa el ancho */
 }
 
 h2 {
     text-align: center;
     color: #333;
     margin-bottom: 30px;
+}
+
+/* Estilo para el logo en el header */
+.logo-link {
+    text-decoration: none;
+    color: inherit; /* Hereda el color blanco del header */
+    cursor: pointer;
 }
 
 /* Estilos para la Página de Inicio */

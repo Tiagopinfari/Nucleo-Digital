@@ -6,6 +6,35 @@ const contadorCarrito = document.getElementById('contador-carrito');
 let productos = []; // Ahora empieza vacío y se llena con el JSON
 let carrito = [];
 
+// --- SISTEMA DE NOTIFICACIONES CON SWEETALERT2 ---
+
+function mostrarNotificacion(mensaje, tipo = 'info') {
+    // Mapeamos tus tipos a los iconos de SweetAlert2
+    let icono = 'info'; 
+    if (tipo === 'exito') icono = 'success';
+    if (tipo === 'error') icono = 'error';
+    if (tipo === 'warning') icono = 'warning';
+
+    // Configuramos el "Toast" (la notificación pequeña)
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'bottom-end', // Abajo a la derecha
+        showConfirmButton: false,
+        timer: 3000,            // Dura 3 segundos
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+
+    // Disparamos la alerta
+    Toast.fire({
+        icon: icono,
+        title: mensaje
+    });
+}
+
 // --- CARGA DE DATOS (NUEVO CON FETCH) ---
 
 async function cargarProductos() {
@@ -195,7 +224,7 @@ function agregarAlCarrito(productoId) {
 
     // Actualizamos el contador visual y guardamos el carrito
     actualizarContadorCarrito();
-    console.log(`Producto añadido: ${productoAñadir.nombre}. Carrito actual:`, carrito); 
+    mostrarNotificacion("¡Producto añadido al carrito!", "exito");
 }
 
 // 3. Actualizar el número de ítems mostrados en el encabezado.
@@ -327,6 +356,10 @@ function eliminarItemPorId(id) {
     const indice = carrito.findIndex(i => i.id === id);
     if (indice !== -1) {
         carrito.splice(indice, 1);
+
+        // --- NUEVO: Notificación de eliminación ---
+        // Usamos 'warning' para que salga el icono de advertencia (amarillo)
+        mostrarNotificacion("Producto eliminado del carrito.", "warning");
     }
 }
 
@@ -355,7 +388,7 @@ function manejarRegistro(event) {
     
     // Validaciones simples
     if (password.length < 6) {
-        mensaje.textContent = 'La contraseña debe tener al menos 6 caracteres.';
+        mostrarNotificacion("La contraseña es muy corta", "error");
         mensaje.style.color = 'red';
         return;
     }
@@ -372,7 +405,7 @@ function manejarRegistro(event) {
     usuarios.push(nuevoUsuario);
     localStorage.setItem(KEY_USUARIOS, JSON.stringify(usuarios));
     
-    mensaje.textContent = '¡Registro exitoso! Ahora inicia sesión.';
+    mostrarNotificacion("¡Registro exitoso!", "exito");
     mensaje.style.color = 'green';
     
     document.getElementById('form-registro').reset();
@@ -398,7 +431,7 @@ function manejarLogin(event) {
         // Guardamos la sesión activa
         localStorage.setItem(KEY_SESION, JSON.stringify(usuarioEncontrado));
         
-        mensaje.textContent = `¡Bienvenido, ${usuarioEncontrado.nombre}!`;
+        mostrarNotificacion(`¡Bienvenido, ${usuarioEncontrado.nombre}!`, "exito");
         mensaje.style.color = '#007bff';
         
         // Redirigir al Inicio 
@@ -406,7 +439,7 @@ function manejarLogin(event) {
             window.location.href = '../index.html'; 
         }, 1000);
     } else {
-        mensaje.textContent = 'Credenciales incorrectas.';
+        mostrarNotificacion("Credenciales incorrectas", "error");
         mensaje.style.color = 'red';
     }
 }
@@ -561,7 +594,7 @@ function agregarDesdeDetalle() {
     guardarCarritoEnLocalStorage();
     actualizarContadorCarrito();
     
-    alert("¡Producto añadido al carrito con tus opciones!");
+    mostrarNotificacion("¡Producto añadido al carrito con tus opciones!", "exito");
 }
 
 // --- LÓGICA DE PERFIL Y CHECKOUT ---
@@ -574,8 +607,11 @@ function finalizarCompra() {
     const sesionActiva = JSON.parse(localStorage.getItem(KEY_SESION));
     
     if (!sesionActiva) {
-        alert("⚠️ Debes iniciar sesión para realizar una compra.");
-        window.location.href = "loginRegistro.html";
+        mostrarNotificacion("Debes iniciar sesión para comprar.", "error");
+        // Opcional: Dar tiempo para leer el error antes de mandar al login
+        setTimeout(() => {
+            window.location.href = "loginRegistro.html";
+        }, 2000);
         return;
     }
 
@@ -603,10 +639,13 @@ function finalizarCompra() {
     carrito = [];
     guardarCarritoEnLocalStorage();
     
-    alert("✅ ¡Compra realizada con éxito! Gracias por tu pedido.");
+    mostrarNotificacion("¡Compra realizada con éxito!", "exito");
     
     // Redirigir al perfil para ver el pedido
-    window.location.href = "perfil.html";
+    // Esperamos 2000 milisegundos (2 segundos) antes de ir al perfil
+    setTimeout(() => {
+        window.location.href = "perfil.html";
+    }, 2000);
 }
 
 // 2. Renderizar Página de Perfil
@@ -707,7 +746,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Simulación Google
         document.getElementById('btn-google').addEventListener('click', () => {
-            alert('Funcionalidad de Google Login.');
+            mostrarNotificacion("Función no disponible en esta demo.", "info");
         });
     }
 
