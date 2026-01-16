@@ -5,10 +5,9 @@ body {
     padding: 0;
     background-color: #f4f4f9;
     color: #333;
-    /* CORRECCIÓN FOOTER: Hacemos que el body sea una columna flexible */
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Altura mínima: 100% de la ventana visible */
+    min-height: 100vh; 
 }
 
 header {
@@ -35,10 +34,9 @@ main {
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
-    /* CORRECCIÓN FOOTER: Hacemos que el main ocupe el espacio sobrante */
     flex: 1; 
-    width: 100%; /* Asegura que ocupe el ancho disponible */
-    box-sizing: border-box; /* Para que el padding no rompa el ancho */
+    width: 100%; 
+    box-sizing: border-box; 
 }
 
 h2 {
@@ -50,7 +48,7 @@ h2 {
 /* Estilo para el logo en el header */
 .logo-link {
     text-decoration: none;
-    color: inherit; /* Hereda el color blanco del header */
+    color: inherit; 
     cursor: pointer;
 }
 
@@ -326,7 +324,7 @@ footer {
     margin-top: 30px;
 }
 
-/* --- Estilos para Login y Registro --- */
+/* Estilos para Login y Registro */
 
 .contenedor-centrado {
     display: flex;
@@ -444,7 +442,7 @@ footer {
     min-height: 20px;
 }
 
-/* --- Estilos para Detalle de Producto --- */
+/* Estilos para Detalle de Producto */
 
 .detalle-producto-grid {
     display: grid;
@@ -454,7 +452,6 @@ footer {
     align-items: start;
 }
 
-/* En pantallas pequeñas, una sola columna */
 @media (max-width: 768px) {
     .detalle-producto-grid {
         grid-template-columns: 1fr;
@@ -529,7 +526,7 @@ footer {
     background-color: #0056b3;
 }
 
-/* --- Estilos para Perfil y Historial --- */
+/* Estilos para Perfil y Historial */
 
 .perfil-container {
     max-width: 800px;
@@ -563,7 +560,6 @@ footer {
     background-color: #c82333;
 }
 
-/* Tarjetas de Pedidos */
 .pedido-card {
     border: 1px solid #ddd;
     border-radius: 8px;
@@ -601,7 +597,6 @@ footer {
     margin-top: 15px;
 }
 
-/* --- Barra de Herramientas (Búsqueda y Filtros) --- */
 .toolbar-productos {
     max-width: 800px;
     margin: 0 auto 30px auto;
@@ -654,4 +649,90 @@ footer {
     background-color: #007bff;
     color: white;
     border-color: #007bff;
+}
+
+/* RESPONSIVE DESIGN (Versión Móvil) */
+
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: column; 
+        text-align: center;
+        padding: 15px;
+    }
+
+    nav {
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column; 
+        gap: 15px; 
+        width: 100%;
+    }
+
+    nav a {
+        margin-left: 0; 
+        background-color: rgba(255, 255, 255, 0.1); 
+        padding: 10px;
+        border-radius: 5px;
+        display: block; 
+    }
+
+    .contenedor-carrito {
+        grid-template-columns: 1fr; 
+        gap: 20px;
+    }
+
+    .lista-carrito {
+        border-right: none; 
+        border-bottom: 1px solid #ddd; 
+        padding-right: 0;
+        padding-bottom: 20px;
+    }
+
+    .resumen-compra {
+        position: relative; 
+        width: 100%;
+        box-sizing: border-box; 
+    }
+
+    .item-carrito {
+        flex-direction: column; 
+        text-align: center;
+        gap: 10px;
+    }
+
+    .item-carrito img {
+        margin-right: 0;
+        width: 100px;
+        height: 100px;
+    }
+
+    .controles-item {
+        justify-content: center; 
+        margin-top: 10px;
+        width: 100%;
+    }
+    
+    .btn-eliminar {
+        width: 100%; 
+        margin-left: 0;
+        margin-top: 10px;
+        display: block;
+    }
+
+    .contenedor-centrado {
+        padding: 20px 10px; 
+    }
+    
+    .auth-container {
+        padding: 1.5rem; 
+    }
+
+    .toolbar-productos {
+        width: 100%;
+    }
+    
+    .buscador input {
+        width: 100%; 
+    }
 }
